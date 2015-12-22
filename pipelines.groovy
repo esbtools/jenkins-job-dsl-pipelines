@@ -33,6 +33,16 @@ static def create_pipeline(context) {
                 stringParam('commit', pipeline_config.git_branch, 'Commit to deploy.')
                 stringParam('previous_commit', null, 'Reference of previous commit. Used to calculate deployment delta.')
             }
+            publishers {
+                downstreamParameterized {
+                    trigger("${project_folder.name}/deploy.${config.environments[0]}") {
+                        condition('SUCCESS')
+                        parameters {
+                            currentBuild()
+                        }
+                    }
+                }
+            }
         }
 
         def create_deploy_job = { environment ->
@@ -196,7 +206,7 @@ static def create_pipeline(context) {
                 }
                 publishers {
                     downstreamParameterized {
-                        trigger("${project_folder.name}/deploy.${config.environments[0]}") {
+                        trigger("${project_folder.name}/prepare_deploy") {
                             condition('SUCCESS')
                             parameters {
                                 currentBuild()
