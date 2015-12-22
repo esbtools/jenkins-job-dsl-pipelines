@@ -104,7 +104,7 @@ static def create_pipeline(context) {
                 if (next_environment != null) {
                     publishers {
                         downstreamParameterized {
-                            trigger("${project_folder.name}/deploy.${environment}") {
+                            trigger("${project_folder.name}/deploy.${next_environment}") {
                                 condition('SUCCESS')
                                 parameters {
                                     currentBuild()
