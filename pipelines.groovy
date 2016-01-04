@@ -29,16 +29,18 @@ static def create_pipeline(context) {
             name = "${project_folder.name}/prepare_deploy"
             deliveryPipelineConfiguration('Build', 'Prepare Deployment')
             parameters {
-                stringParam('build_job_build_number', null, 'Number from successful build.')
-                stringParam('commit', pipeline_config.git_branch, 'Commit to deploy.')
-                stringParam('previous_commit', null, 'Reference of previous commit. Used to calculate deployment delta.')
+                components.each { component ->
+                    stringParam("${component}_previous_commit", null, "Previous successful commit for ${component}.")
+                    stringParam("${component}_commit", pipeline_config.git_branch, "Current commit for ${component}.")
+                    stringParam("${component}_build_number", null, "Build number for ${component}.")
+                }
             }
             publishers {
                 downstreamParameterized {
                     trigger("${project_folder.name}/deploy.${pipeline_config.environments[0]}") {
                         condition('SUCCESS')
                         parameters {
-                            currentBuild()
+                            predefinedProp('release_identifier', 'dev-ci-${BUILD_NUMBER}')
                         }
                     }
                 }
@@ -51,9 +53,7 @@ static def create_pipeline(context) {
                 name = "${project_folder.name}/deploy.${environment}"
                 deliveryPipelineConfiguration(environment, 'Deploy')
                 parameters {
-                    stringParam('build_job_build_number', null, 'Number from successful build.')
-                    stringParam('commit', pipeline_config.git_branch, 'Commit to deploy.')
-                    stringParam('previous_commit', null, 'Reference of previous commit. Used to calculate deployment delta.')
+                    stringParam('release_identifier', null, 'Identifier of release to deploy.')
                 }
                 publishers {
                     downstreamParameterized {
@@ -74,9 +74,7 @@ static def create_pipeline(context) {
                 name = "${project_folder.name}/test.${environment}"
                 deliveryPipelineConfiguration(environment, 'Test')
                 parameters {
-                    stringParam('build_job_build_number', null, 'Number from successful build.')
-                    stringParam('commit', pipeline_config.git_branch, 'Commit to deploy.')
-                    stringParam('previous_commit', null, 'Reference of previous commit. Used to calculate deployment delta.')
+                    stringParam('release_identifier', null, 'Release identifier. Can be used in reports.')
                 }
                 publishers {
                     downstream_job = "${project_folder.name}/promote_from.${environment}"
@@ -107,9 +105,7 @@ static def create_pipeline(context) {
                 name = "${project_folder.name}/promote_from.${environment}"
                 deliveryPipelineConfiguration(environment, 'Promote')
                 parameters {
-                    stringParam('build_job_build_number', null, 'Number from successful build.')
-                    stringParam('commit', pipeline_config.git_branch, 'Commit to deploy.')
-                    stringParam('previous_commit', null, 'Reference of previous commit. Used to calculate deployment delta.')
+                    stringParam('release_identifier', null, 'Identifier of the release to promote.')
                 }
                 if (next_environment != null) {
                     publishers {
@@ -179,7 +175,7 @@ static def create_pipeline(context) {
                             condition('SUCCESS')
                             parameters {
                                 predefinedProp('commit', '${GIT_COMMIT}')
-                                predefinedProp('build_job_build_number', "\${TRIGGERED_BUILD_NUMBER_build_${config.project_name}")
+                                predefinedProp('build_job_build_number', "\${TRIGGERED_BUILD_NUMBER_${build_job.name.replaceAll('\\.', '_')}}")
                                 predefinedProp('previous_commit', '${GIT_PREVIOUS_SUCCESSFUL_COMMIT}')
                             }
                         }
@@ -187,7 +183,7 @@ static def create_pipeline(context) {
                             condition('UNSTABLE_OR_BETTER')
                             parameters {
                                 predefinedProp('commit', '${GIT_COMMIT}')
-                                predefinedProp('build_job_build_number', "\${TRIGGERED_BUILD_NUMBER_build_${config.project_name}")
+                                predefinedProp('build_job_build_number', "\${TRIGGERED_BUILD_NUMBER_${build_job.name.replaceAll('\\.', '_')}}")
                                 predefinedProp('previous_commit', '${GIT_PREVIOUS_SUCCESSFUL_COMMIT}')
                             }
                         }
@@ -209,7 +205,9 @@ static def create_pipeline(context) {
                         trigger("${project_folder.name}/prepare_deploy") {
                             condition('SUCCESS')
                             parameters {
-                                currentBuild()
+                                predefinedProp("${component}_previous_commit", '${GIT_PREVIOUS_SUCCESSFUL_COMMIT}')
+                                predefinedProp("${component}_commit", '${GIT_COMMIT}')
+                                predefinedProp("${component}_build_number", "\${TRIGGERED_BUILD_NUMBER_build_${config.project_name}")
                             }
                         }
                     }
