@@ -175,7 +175,7 @@ static def create_pipeline(context) {
                             condition('SUCCESS')
                             parameters {
                                 predefinedProp('commit', '${GIT_COMMIT}')
-                                predefinedProp('build_job_build_number', "\${TRIGGERED_BUILD_NUMBER_${build_job.name.replaceAll('\\.', '_')}}")
+                                predefinedProp('build_job_build_number', "\${TRIGGERED_BUILD_NUMBER_${build_job.name.replaceAll('[^a-zA-Z0-9]+', '_')}}")
                                 predefinedProp('previous_commit', '${GIT_PREVIOUS_SUCCESSFUL_COMMIT}')
                             }
                         }
@@ -183,7 +183,7 @@ static def create_pipeline(context) {
                             condition('UNSTABLE_OR_BETTER')
                             parameters {
                                 predefinedProp('commit', '${GIT_COMMIT}')
-                                predefinedProp('build_job_build_number', "\${TRIGGERED_BUILD_NUMBER_${build_job.name.replaceAll('\\.', '_')}}")
+                                predefinedProp('build_job_build_number', "\${TRIGGERED_BUILD_NUMBER_${build_job.name.replaceAll('[^a-zA-Z0-9]+', '_')}}")
                                 predefinedProp('previous_commit', '${GIT_PREVIOUS_SUCCESSFUL_COMMIT}')
                             }
                         }
