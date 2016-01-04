@@ -29,7 +29,7 @@ static def create_pipeline(context) {
             name = "${project_folder.name}/prepare_deploy"
             deliveryPipelineConfiguration('Build', 'Prepare Deployment')
             parameters {
-                pipeline_config.components.each { component ->
+                pipeline_config.components.each { component, config ->
                     stringParam("${component}_previous_commit", null, "Previous successful commit for ${component}.")
                     stringParam("${component}_commit", pipeline_config.git_branch, "Current commit for ${component}.")
                     stringParam("${component}_build_number", null, "Build number for ${component}.")
