@@ -168,9 +168,6 @@ static def create_pipeline(context) {
                 }
                 triggers {
                     scm('H/2 * * * *')
-                    config.library_jobs.each { library_job ->
-                        upstream(library_job.name)
-                    }
                 }
                 publishers {
                     downstreamParameterized {
