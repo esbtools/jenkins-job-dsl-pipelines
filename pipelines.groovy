@@ -226,6 +226,9 @@ static def create_pipeline(context) {
                     stringParam('commit', config.git_branch, 'Commit to analyze.')
                     stringParam('previous_commit', null, 'Reference of previous successful build.')
                 }
+                scm {
+                    git(config.git_url, '${commit}')
+                }
             }
         }
     }
