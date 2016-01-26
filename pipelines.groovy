@@ -41,7 +41,7 @@ static def create_pipeline(context) {
                     trigger("${project_folder.name}/deploy.${pipeline_config.environments[0]}") {
                         condition('SUCCESS')
                         parameters {
-                            currentBuild()
+                            predefinedProp("release_identifier", '${release_identifier}')
                         }
                     }
                 }
