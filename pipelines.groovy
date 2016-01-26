@@ -24,11 +24,12 @@ static def create_pipeline(context) {
             }
         }
 
-        def prepare_deploy_job = pipeline_config.prepare_deploy ?: job('prepare_deploy')
-        prepare_deploy_job.with {
-            name = "${project_folder.name}/prepare_deploy"
+        def prepare_release_job = pipeline_config.prepare_release ?: job('prepare_release')
+        prepare_release_job.with {
+            name = "${project_folder.name}/prepare_release"
             deliveryPipelineConfiguration('Build', 'Prepare Deployment')
             parameters {
+                stringParam('release_identifier', "ci-${pipeline_config.project_name.replace(' ', '_')}-\${BUILD_NUMBER}')
                 pipeline_config.components.each { component, config ->
                     stringParam("${component}_previous_commit", null, "Previous successful commit for ${component}.")
                     stringParam("${component}_commit", pipeline_config.git_branch, "Current commit for ${component}.")
@@ -40,7 +41,7 @@ static def create_pipeline(context) {
                     trigger("${project_folder.name}/deploy.${pipeline_config.environments[0]}") {
                         condition('SUCCESS')
                         parameters {
-                            predefinedProp('release_identifier', 'dev-ci-${BUILD_NUMBER}')
+                            currentBuild()
                         }
                     }
                 }
@@ -161,7 +162,7 @@ static def create_pipeline(context) {
                                 unstable('UNSTABLE')
                             }
                             parameters {
-                                predefinedProp('commit', '${GIT_COMMIT}')
+                                currentBuild()
                             }
                         }
                     }
@@ -199,18 +200,18 @@ static def create_pipeline(context) {
                 name = "${component_folder.name}/integration_test"
                 deliveryPipelineConfiguration('Build', 'Integration Test')
                 parameters {
-                    stringParam('build_job_build_number', null, 'Build number of build that triggered analysis.')
+                    stringParam('build_job_build_number', null, 'Build number of build that triggered integration test.')
                     stringParam('commit', config.git_branch, 'Commit to analyze.')
                     stringParam('previous_commit', null, 'Reference of previous successful build.')
                 }
                 publishers {
                     downstreamParameterized {
-                        trigger("${project_folder.name}/prepare_deploy") {
+                        trigger("${project_folder.name}/prepare_release") {
                             condition('SUCCESS')
                             parameters {
-                                predefinedProp("${component}_previous_commit", '${GIT_PREVIOUS_SUCCESSFUL_COMMIT}')
-                                predefinedProp("${component}_commit", '${GIT_COMMIT}')
-                                predefinedProp("${component}_build_number", "\${TRIGGERED_BUILD_NUMBER_build_${config.project_name}")
+                                predefinedProp("${component}_previous_commit", '${previous_commit}')
+                                predefinedProp("${component}_commit", '${commit}')
+                                predefinedProp("${component}_build_number", '${build_job_build_number}')
                             }
                         }
                     }
