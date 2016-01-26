@@ -27,7 +27,7 @@ static def create_pipeline(context) {
         def prepare_release_job = pipeline_config.prepare_release ?: job('prepare_release')
         prepare_release_job.with {
             name = "${project_folder.name}/prepare_release"
-            deliveryPipelineConfiguration('Build', 'Prepare Deployment')
+            deliveryPipelineConfiguration('Build', 'Prepare Release')
             parameters {
                 stringParam('release_identifier', "ci-${pipeline_config.project_name.replace(' ', '_')}-\${BUILD_NUMBER}")
                 pipeline_config.components.each { component, config ->
