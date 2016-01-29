@@ -53,6 +53,7 @@ class Pipeline {
                     }
                 }
             }
+            folder("${root_folder.name}/${project_name}/Build")
 
             components.each {
                 it.configure(dslFactory, project_name, project_folder)
@@ -72,7 +73,7 @@ class Pipeline {
                 }
                 publishers {
                     downstreamParameterized {
-                        trigger("${project_folder.name}/deploy.${environments[0]}") {
+                        trigger("${project_folder.name}/${environments[0]}/deploy") {
                             condition('SUCCESS')
                             parameters {
                                 predefinedProp("release_identifier", '${release_identifier}')
@@ -92,7 +93,7 @@ class Pipeline {
                     }
                     publishers {
                         downstreamParameterized {
-                            trigger("${project_folder.name}/test.${environment}") {
+                            trigger("${project_folder.name}/${environment}/test") {
                                 condition('SUCCESS')
                                 parameters {
                                     currentBuild()
@@ -112,7 +113,7 @@ class Pipeline {
                         stringParam('release_identifier', null, 'Release identifier. Can be used in reports.')
                     }
                     publishers {
-                        downstream_job = "${project_folder.name}/promote_from.${environment}"
+                        downstream_job = "${project_folder.name}/${environment}/promote_from"
                         if (next_environment in manual_promotion_environments) {
                             buildPipelineTrigger(downstream_job) {
                                 parameters {
@@ -145,7 +146,7 @@ class Pipeline {
                     if (next_environment != null) {
                         publishers {
                             downstreamParameterized {
-                                trigger("${project_folder.name}/deploy.${next_environment}") {
+                                trigger("${project_folder.name}/${next_environment}/deploy") {
                                     condition('SUCCESS')
                                     parameters {
                                         currentBuild()
@@ -162,6 +163,7 @@ class Pipeline {
                 if (index != environments.size - 1) {
                     next_environment = environments[index + 1]
                 }
+                folder("${project_folder.name}/${environment}")
                 create_deploy_job(environment)
                 create_test_job(environment)
                 create_promote_job(environment, next_environment)
