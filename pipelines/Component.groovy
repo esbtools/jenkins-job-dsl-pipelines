@@ -98,7 +98,7 @@ class Component {
                 }
                 publishers {
                     downstreamParameterized {
-                        trigger("${project_folder.name}/prepare_release") {
+                        trigger("${project_folder.name}/Build/prepare_release") {
                             condition('SUCCESS')
                             parameters {
                                 predefinedProp("${name}_previous_commit", '${previous_commit}')
