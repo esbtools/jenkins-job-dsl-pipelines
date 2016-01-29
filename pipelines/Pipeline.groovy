@@ -60,7 +60,7 @@ class Pipeline {
 
             def prepare_release_job = prepare_release ?: job('prepare_release (noop)')
             prepare_release_job.with {
-                name = "${project_folder.name}/prepare_release"
+                name = "${project_folder.name}/Build/prepare_release"
                 deliveryPipelineConfiguration('Build', 'Prepare Release')
                 parameters {
                     stringParam('release_identifier', "ci-${project_name.replace(' ', '_')}-\${BUILD_NUMBER}")
