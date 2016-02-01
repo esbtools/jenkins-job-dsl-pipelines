@@ -26,6 +26,15 @@ class Component {
     List<String> upstreams
 
     void configure(def dslFactory, String project_name, Folder project_folder) {
+        if (dslFactory == null) {
+            throw new IllegalArgumentException('Must specify dslFactory')
+        }
+        if (project_name == null) {
+            throw new IllegalArgumentException('Must specify project_name')
+        }
+        if (project_folder == null) {
+            throw new IllegalArgumentException('Must specify project_folder')
+        }
         dslFactory.with {
             def component_folder = folder("${project_folder.name}/Build/${name}")
 

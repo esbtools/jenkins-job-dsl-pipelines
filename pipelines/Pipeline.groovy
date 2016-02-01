@@ -4,9 +4,6 @@ import javaposse.jobdsl.dsl.Job
 import javaposse.jobdsl.dsl.Folder
 
 class Pipeline {
-    /** Used with `with` to invoke Job DSL methods */
-    def dslFactory
-
     /** List of components to have as part of the pipeline */
     List<Component> components
 
@@ -34,7 +31,7 @@ class Pipeline {
     /** Promote jobs for each environment */
     Map<String,Job> promote = [:]
 
-    void build() {
+    void build(def dslFactory) {
         if (dslFactory == null) {
             throw new IllegalArgumentException('Must specify dslFactory')
         }
