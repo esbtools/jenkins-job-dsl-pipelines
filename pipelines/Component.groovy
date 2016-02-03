@@ -35,6 +35,7 @@ class Component {
         if (project_folder == null) {
             throw new IllegalArgumentException('Must specify project_folder')
         }
+        String component_name = name
         dslFactory.with {
             def component_folder = folder("${project_folder.name}/Build/${name}")
 
@@ -110,9 +111,9 @@ class Component {
                         trigger("${project_folder.name}/Build/prepare_release") {
                             condition('SUCCESS')
                             parameters {
-                                predefinedProp("${name}_previous_commit", '${previous_commit}')
-                                predefinedProp("${name}_commit", '${commit}')
-                                predefinedProp("${name}_build_number", '${build_job_build_number}')
+                                predefinedProp("${component_name}_previous_commit", '${previous_commit}')
+                                predefinedProp("${component_name}_commit", '${commit}')
+                                predefinedProp("${component_name}_build_number", '${build_job_build_number}')
                             }
                         }
                     }
