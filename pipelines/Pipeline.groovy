@@ -89,6 +89,7 @@ class Pipeline {
                     if (notification_irc_channel) {
                         irc {
                             channel(notification_irc_channel)
+                            notificationMessage('SummaryOnly')
                             strategy('ALL')
                         }
                     }
@@ -118,6 +119,7 @@ class Pipeline {
                         if (notification_irc_channel) {
                             irc {
                                 channel(notification_irc_channel)
+                                notificationMessage('SummaryOnly')
                                 strategy('ALL')
                             }
                         }
