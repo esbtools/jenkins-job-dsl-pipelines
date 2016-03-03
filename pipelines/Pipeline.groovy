@@ -31,6 +31,12 @@ class Pipeline {
     /** Promote jobs for each environment */
     Map<String,Job> promote = [:]
 
+    /** What email to use for notifications */
+    String notification_email = null
+
+    /** Which channel to notify in */
+    String notification_irc_channel = null
+
     void build(def dslFactory) {
         if (dslFactory == null) {
             throw new IllegalArgumentException('Must specify dslFactory')
@@ -77,6 +83,15 @@ class Pipeline {
                             }
                         }
                     }
+                    if (notification_email) {
+                        mailer(notification_email)
+                    }
+                    if (notification_irc_channel) {
+                        irc {
+                            channel(notification_irc_channel)
+                            strategy('ALL')
+                        }
+                    }
                 }
             }
 
@@ -95,6 +110,15 @@ class Pipeline {
                                 parameters {
                                     currentBuild()
                                 }
+                            }
+                        }
+                        if (notification_email) {
+                            mailer(notification_email)
+                        }
+                        if (notification_irc_channel) {
+                            irc {
+                                channel(notification_irc_channel)
+                                strategy('ALL')
                             }
                         }
                     }
