@@ -52,7 +52,7 @@ class Pipeline {
                 showChangeLog()
                 pipelines {
                     components.each { component ->
-                        component(component.name, "${project_folder.name}/build/${component.name}/build")
+                        component(component.name, "${project_folder.name}/Build/${component.name}/build")
                     }
                 }
             }
