@@ -51,8 +51,8 @@ class Pipeline {
                 enableManualTriggers()
                 showChangeLog()
                 pipelines {
-                    components.each { component ->
-                        component(component.name, "${project_folder.name}/Build/${component.name}/build")
+                    this.components.each { pipeline_component ->
+                        component(pipeline_component.name, "${project_folder.name}/Build/${pipeline_component.name}/build")
                     }
                 }
             }
