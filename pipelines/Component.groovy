@@ -19,8 +19,8 @@ class Component {
     /** Job to analyze the component */
     Job analyze
 
-    /** Job to integration test the component */
-    Job integration_test
+    /** Job to predeploy test the component */
+    Job predeploy_test
 
     /** Names of jobs to use as upstreams */
     List<String> upstreams
@@ -77,7 +77,7 @@ class Component {
                 }
                 publishers {
                     downstreamParameterized {
-                        trigger("${component_folder.name}/integration_test") {
+                        trigger("${component_folder.name}/predeploy_test") {
                             condition('SUCCESS')
                             parameters {
                                 predefinedProp('commit', '${GIT_COMMIT}')
@@ -97,12 +97,12 @@ class Component {
                 }
             }
 
-            def integration_test_job = integration_test ?: job('integration_test')
-            integration_test_job.with {
-                name = "${component_folder.name}/integration_test"
-                deliveryPipelineConfiguration('Build', 'Integration Test')
+            def predeploy_test_job = predeploy_test ?: job('predeploy_test')
+            predeploy_test_job.with {
+                name = "${component_folder.name}/predeploy_test"
+                deliveryPipelineConfiguration('Build', 'Predeploy Test')
                 parameters {
-                    stringParam('build_job_build_number', null, 'Build number of build that triggered integration test.')
+                    stringParam('build_job_build_number', null, 'Build number of build that triggered predeploy test.')
                     stringParam('commit', git_branch, 'Commit to analyze.')
                     stringParam('previous_commit', null, 'Reference of previous successful build.')
                 }
