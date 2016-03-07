@@ -62,10 +62,13 @@ class Pipeline {
                 it.configure(dslFactory, project_name, project_folder)
             }
 
-            def prepare_release_job = prepare_release ?: job('prepare_release (noop)')
+            def prepare_release_job = prepare_release ?: job('prepare_release')
             prepare_release_job.with {
                 name = "${project_folder.name}/Build/prepare_release"
                 deliveryPipelineConfiguration('Build', 'Prepare Release')
+                if (prepare_release == null) {
+                    deliveryPipelineConfiguration('Build', 'Prepare Release (placeholder)')
+                }
                 parameters {
                     stringParam('release_identifier', "ci-${project_name.replace(' ', '_')}-\${BUILD_NUMBER}")
                     components.each { component ->
@@ -101,6 +104,9 @@ class Pipeline {
                 deploy_job.with {
                     name = "${project_folder.name}/${environment}/deploy"
                     deliveryPipelineConfiguration(environment, 'Deploy')
+                    if (deploy[environment] == null) {
+                        deliveryPipelineConfiguration(environment, 'Deploy (placeholder)')
+                    }
                     parameters {
                         stringParam('release_identifier', null, 'Identifier of release to deploy.')
                     }
@@ -128,10 +134,13 @@ class Pipeline {
             }
 
             create_test_job = { environment ->
-                def test_job = test?.get(environment) ?: job("test.${environment}")
+                def test_job = test[environment] ?: job("test.${environment}")
                 test_job.with {
                     name = "${project_folder.name}/${environment}/test"
                     deliveryPipelineConfiguration(environment, 'Test')
+                    if (test[environment] == null) {
+                        deliveryPipelineConfiguration(environment, 'Test (placeholder)')
+                    }
                     parameters {
                         stringParam('release_identifier', null, 'Release identifier. Can be used in reports.')
                     }
@@ -159,10 +168,13 @@ class Pipeline {
             }
 
             create_promote_job = { environment, next_environment ->
-                def promote_job = promote.get(environment) ?: job("promote_from.${environment}")
+                def promote_job = promote[environment] ?: job("promote_from.${environment}")
                 promote_job.with {
                     name = "${project_folder.name}/${environment}/promote_from"
                     deliveryPipelineConfiguration(environment, 'Promote')
+                    if (promote[environment] == null) {
+                        deliveryPipelineConfiguration(environment, 'Promote (placeholder)')
+                    }
                     parameters {
                         stringParam('release_identifier', null, 'Identifier of the release to promote.')
                     }

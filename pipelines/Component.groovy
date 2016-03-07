@@ -48,6 +48,9 @@ class Component {
             def build_job = build ?: job("build.${project_name}.${name}")
             build_job.with {
                 deliveryPipelineConfiguration('Build', 'Actual Build')
+                if (build == null) {
+                    deliveryPipelineConfiguration('Build', 'Actual Build (placeholder)')
+                }
                 parameters {
                     stringParam('commit', git_branch, 'Commit/Branch/Tag to build.')
                 }
@@ -124,6 +127,9 @@ class Component {
             predeploy_test_job.with {
                 name = "${component_folder.name}/predeploy_test"
                 deliveryPipelineConfiguration('Build', 'Predeploy Test')
+                if (predeploy_test == null) {
+                    deliveryPipelineConfiguration('Build', 'Predeploy Test (placeholder)')
+                }
                 parameters {
                     stringParam('build_job_build_number', null, 'Build number of build that triggered predeploy test.')
                     stringParam('commit', git_branch, 'Commit to analyze.')
@@ -147,6 +153,9 @@ class Component {
             analyze_job.with {
                 name = "${component_folder.name}/analyze"
                 deliveryPipelineConfiguration('Build', 'Analyze')
+                if (analyze == null) {
+                    deliveryPipelineConfiguration('Build', 'Analyze (placeholder)')
+                }
                 parameters {
                     stringParam('build_job_build_number', null, 'Build number of build that triggered analysis.')
                     stringParam('commit', git_branch, 'Commit to analyze.')
