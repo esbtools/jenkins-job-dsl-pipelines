@@ -14,10 +14,10 @@ class Component {
     String git_branch = 'master'
 
     /** Git include paths - only trigger builds on these paths */
-    String git_include_paths = []
+    List<String> git_include_paths = []
 
     /** Git path exclude - don't trigger builds on these paths */
-    String git_exclude_paths = []
+    List<String> git_exclude_paths = []
 
     /** Job to build the component */
     Job build
@@ -67,13 +67,13 @@ class Component {
                             url(git_url)
                             branch(git_branch)
                         }
-                        if (git_include_paths.size > 0 || git_exclude_paths.size > 0) {
+                        if (git_include_paths || git_exclude_paths) {
                             configure { git ->
                                 git / 'extensions' << 'hudson.plugins.git.extensions.impl.PathRestriction' {
-                                    if (git_include_paths.size > 0) {
+                                    if (git_include_paths) {
                                         includedRegions(git_include_paths.iterator().join('\n'))
                                     }
-                                    if (git_exclude_paths.size > 0) {
+                                    if (git_exclude_paths) {
                                         excludedRegions(git_exclude_paths.iterator().join('\n'))
                                     }
                                 }
