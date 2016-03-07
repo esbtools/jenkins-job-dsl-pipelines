@@ -68,10 +68,10 @@ class Component {
                             configure { git ->
                                 git / 'extensions' << 'hudson.plugins.git.extensions.impl.PathRestriction' {
                                     if (git_include_paths) {
-                                        includedRegions(git_include_paths.join('\n'))
+                                        includedRegions(git_include_paths.iterator().join('\n'))
                                     }
                                     if (git_exclude_paths) {
-                                        excludedRegions(git_exclude_paths.join('\n'))
+                                        excludedRegions(git_exclude_paths.iterator().join('\n'))
                                     }
                                 }
                             }
