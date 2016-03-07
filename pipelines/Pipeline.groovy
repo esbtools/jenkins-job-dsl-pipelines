@@ -84,7 +84,7 @@ class Pipeline {
                         }
                     }
                     if (notification_email) {
-                        mailer(notification_email)
+                        mailer(notification_email, true)
                     }
                     if (notification_irc_channel) {
                         irc {
@@ -114,7 +114,7 @@ class Pipeline {
                             }
                         }
                         if (notification_email) {
-                            mailer(notification_email)
+                            mailer(notification_email, true)
                         }
                         if (notification_irc_channel) {
                             irc {
