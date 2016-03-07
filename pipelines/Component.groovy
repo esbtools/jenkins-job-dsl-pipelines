@@ -67,13 +67,13 @@ class Component {
                             url(git_url)
                             branch(git_branch)
                         }
-                        if (git_include_paths || git_exclude_paths) {
+                        if (git_include_paths.size > 0 || git_exclude_paths.size > 0) {
                             configure { git ->
                                 git / 'extensions' << 'hudson.plugins.git.extensions.impl.PathRestriction' {
-                                    if (git_include_paths) {
+                                    if (git_include_paths.size > 0) {
                                         includedRegions(git_include_paths.iterator().join('\n'))
                                     }
-                                    if (git_exclude_paths) {
+                                    if (git_exclude_paths.size > 0) {
                                         excludedRegions(git_exclude_paths.iterator().join('\n'))
                                     }
                                 }
