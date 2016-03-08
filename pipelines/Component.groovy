@@ -85,7 +85,7 @@ class Component {
                                     }
                                 }
                                 git / 'extensions' << 'hudson.plugins.git.extensions.impl.UserExclusion' {
-                                    excludedUsers(jenkins_git_user)
+                                    excludedUsers(Component.jenkins_git_user)
                                 }
                             }
                         }
