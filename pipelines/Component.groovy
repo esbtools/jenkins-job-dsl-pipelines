@@ -31,6 +31,13 @@ class Component {
     /** Names of jobs to use as upstreams */
     List<String> upstreams
 
+    static String jenkins_git_username = null
+
+    static {
+        jenkins_git_username = 'git config --get user.name'.execute().text.trim()
+        println "Ignoring commits from Jenkins (${jenkins_git_username}) by default"
+    }
+
     void configure(def dslFactory, String project_name, Folder project_folder) {
         if (dslFactory == null) {
             throw new IllegalArgumentException('Must specify dslFactory')
@@ -76,6 +83,7 @@ class Component {
                                     if (git_exclude_paths) {
                                         excludedRegions(git_exclude_paths.iterator().join('\n'))
                                     }
+                                    excludedUsers(jenkins_git_user)
                                 }
                             }
                         }
