@@ -83,6 +83,8 @@ class Component {
                                     if (git_exclude_paths) {
                                         excludedRegions(git_exclude_paths.iterator().join('\n'))
                                     }
+                                }
+                                git / 'extensions' << 'hudson.plugins.git.extensions.impl.UserExclusion' {
                                     excludedUsers(jenkins_git_user)
                                 }
                             }
