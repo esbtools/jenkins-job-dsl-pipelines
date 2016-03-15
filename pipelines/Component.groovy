@@ -74,8 +74,8 @@ class Component {
                             url(git_url)
                             branch(git_branch)
                         }
-                        if (git_include_paths || git_exclude_paths) {
-                            configure { git ->
+                        configure { git ->
+                            if (git_include_paths || git_exclude_paths) {
                                 git / 'extensions' << 'hudson.plugins.git.extensions.impl.PathRestriction' {
                                     if (git_include_paths) {
                                         includedRegions(git_include_paths.iterator().join('\n'))
@@ -84,9 +84,9 @@ class Component {
                                         excludedRegions(git_exclude_paths.iterator().join('\n'))
                                     }
                                 }
-                                git / 'extensions' << 'hudson.plugins.git.extensions.impl.UserExclusion' {
-                                    excludedUsers(jenkins_git_username)
-                                }
+                            }
+                            git / 'extensions' << 'hudson.plugins.git.extensions.impl.UserExclusion' {
+                                excludedUsers(jenkins_git_username)
                             }
                         }
                     }
