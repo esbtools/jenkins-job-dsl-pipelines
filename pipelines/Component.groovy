@@ -62,7 +62,7 @@ class Component {
                     stringParam('commit', git_branch, 'Commit/Branch/Tag to build.')
                 }
                 scm {
-                    git(git_url, git_branch)
+                    git(git_url, '${commit}')
                 }
             }
 
