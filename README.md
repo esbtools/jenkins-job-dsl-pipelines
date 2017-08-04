@@ -11,7 +11,7 @@ There are essentially two stages. The first is the project build stage and the s
 | Build          | C-I Build        | Master job that tracks the c-i branch of a component.
 |                | Actual Build     | Job that actually performs the build. Used as a "subproject" of C-I Build.
 |                | Analyze          | Performs static analysis of the code. Not used to gate deployment, just used to inform human interaction with the pipeline.
-|                | Prepare          | Release Prepares a release.
+|                | Prepare Release  | Prepares a release.
 |                | Integration Test | Run any integration tests for the component.
 | ${environment} | Deploy           | Deploy the code to ${environment}.
 |                | Test             | Run smoke tests and automated tests to verify the state of ${environment}.
